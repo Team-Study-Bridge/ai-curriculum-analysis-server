@@ -1,0 +1,23 @@
+name: ai-curriculum-analysis-server
+
+replicaCount: 1
+
+image:
+  repository: 879381276515.dkr.ecr.ap-northeast-2.amazonaws.com/aigongbu/service-images
+  tag:
+  pullPolicy: IfNotPresent
+
+containerPort: 8000
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: 400m
+    memory: 384Mi
+
+service:
+  type: ClusterIP
+  port: 80
+
