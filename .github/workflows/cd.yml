@@ -10,7 +10,7 @@ env:
   ECR_REPOSITORY: aigongbu/service-images
   IMAGE_TAG: ${{ github.sha }}
   SERVICE_NAME: ai-curriculum-analysis-server
-  HELM_PATH: helm/ai-curriculum-analysis-server/values.yaml
+  HELM_PATH: helm/values.yaml
 
 jobs:
   build-push-update:
