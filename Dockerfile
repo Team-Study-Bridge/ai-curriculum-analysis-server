@@ -1,24 +1,38 @@
 FROM python:3.11-slim
 
-# 1. 가상환경 디렉토리 설정 및 생성
+# NumPy 호환성을 위한 환경변수 설정
+ENV NPY_NUM_BUILD_JOBS=1
+ENV PYTHONUNBUFFERED=1
+
+# 가상환경 디렉토리 설정 및 생성
 ENV VIRTUAL_ENV=/opt/venv
 RUN python -m venv $VIRTUAL_ENV
 
-# 2. venv 환경이 기본 PATH로 잡히도록 설정
+# venv 환경이 기본 PATH로 잡히도록 설정
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 WORKDIR /app
 
-# 3. 필요한 시스템 패키지 설치 (git 등)
-RUN apt-get update && apt-get install -y git
+# 필요한 시스템 패키지 설치
+RUN apt-get update && apt-get install -y \
+    git \
+    build-essential \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
 
-# 4. requirements.txt 복사 후 패키지 설치 (venv 활성화 상태)
+# requirements.txt 복사 후 패키지 설치
 COPY requirements.txt ./
-RUN pip install --upgrade pip \
+
+# pip 업그레이드 및 NumPy 먼저 설치
+RUN pip install --upgrade pip setuptools wheel \
+    && pip install "numpy<2.0.0" \
     && pip install --no-cache-dir -r requirements.txt
 
-# 5. 소스 복사
+# 소스 복사
 COPY . .
 
-# 6. 앱 실행 (uvicorn도 requirements.txt에 명시!)
+# OpenAI API 키 확인을 위한 환경변수 기본값 설정 (선택사항)
+ENV OPENAI_API_KEY=""
+
+# 앱 실행
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
