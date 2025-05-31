@@ -31,8 +31,5 @@ RUN pip install --upgrade pip setuptools wheel \
 # 소스 복사
 COPY . .
 
-# OpenAI API 키 확인을 위한 환경변수 기본값 설정 (선택사항)
-ENV OPENAI_API_KEY=""
-
 # 앱 실행
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
